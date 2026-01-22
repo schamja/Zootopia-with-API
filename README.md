@@ -1,12 +1,20 @@
 # Zootopia with API
 
-This project is a Python-based application that demonstrates how to work with an external API.
-It fetches data, processes it, and presents it in a structured and readable format.
+# My Awesome Project
 
-The project is intended for learning purposes and showcases clean project structure,
-API usage, and basic Python best practices.
+This project does amazing things and solves all your problems!
 
----
+## Installation
+
+To install this project, simply clone the repository and install the dependencies in requirements.txt using `pip`
+
+## Usage
+
+To use this project, run the following command - `python main.py`.
+
+## Contributing
+
+We welcome contributions! If you'd like to contribute to this project, please follow these guidelines...
 
 ## Installation
 
