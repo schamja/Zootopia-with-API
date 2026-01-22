@@ -1,65 +1,38 @@
 import data_fetcher
-import pytz
-
-import data_fetcher
 
 
 def generate_card_html(animal):
-    """Erstellt den HTML-Inhalt für eine einzelne Tier-Karte."""
-    name = animal.get('name')
-    if not name:
-        return ""
+    """Erstellt HTML für ein Tier."""
+    name = animal.get('name', 'Unknown')
+    char = animal.get('characteristics', {})
 
     card_content = f"Name: {name}\n"
-    characteristics = animal.get('characteristics', {})
+    if char.get('diet'): card_content += f"Diet: {char.get('diet')}\n"
+    if animal.get('locations'): card_content += f"Location: {animal.get('locations')[0]}\n"
 
-    diet = characteristics.get('diet')
-    if diet:
-        card_content += f"Diet: {diet}\n"
-
-    locations = animal.get('locations')
-    if locations and isinstance(locations, list):
-        card_content += f"Location: {locations[0]}\n"
-
-    return f"""
-            <li class="cards__item">
-                <div class="card__text">
-{card_content}
-                </div>
-            </li>
-    """
+    return f'<li class="cards__item"><div class="card__text">{card_content}</div></li>'
 
 
 def main():
-    # Benutzereingabe
-    animal_name = input("Please enter an animal: ")
+    # 1. Template laden
+    with open("animals_templates.html", "r", encoding='utf-8') as f:
+        template = f.read()
 
-    # Aufruf des Daten-Fetchers (neue Architektur)
+    # 2. Daten über den Fetcher holen
+    animal_name = input("Please enter an animal: ")
     animal_data = data_fetcher.fetch_data(animal_name)
 
-    # Template laden
-    try:
-        with open("animals_templates.html", "r", encoding='utf-8') as f:
-            template_content = f.read()
-    except FileNotFoundError:
-        print("Fehler: Template-Datei nicht gefunden.")
-        return
-
-    # Inhalt basierend auf Daten generieren
+    # 3. HTML bauen (Meilenstein 3: Fehlerbehandlung)
     if animal_data:
-        all_cards_html = ""
-        for animal in animal_data:
-            all_cards_html += generate_card_html(animal)
+        cards = "".join([generate_card_html(a) for a in animal_data])
     else:
-        all_cards_html = f'<h2>The animal "{animal_name}" doesn\'t exist.</h2>'
+        cards = f'<h2>The animal "{animal_name}" doesn\'t exist.</h2>'
 
-    # Finale Webseite erstellen
-    final_html = template_content.replace("__REPLACE_CARDS__", all_cards_html)
-
+    # 4. Speichern
+    final_html = template.replace("__REPLACE_CARDS__", cards)
     with open("animals.html", "w", encoding='utf-8') as f:
         f.write(final_html)
-
-    print("Website was successfully generated to the file animals.html.")
+    print("Website was successfully generated.")
 
 
 if __name__ == "__main__":
